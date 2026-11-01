@@ -1,0 +1,173 @@
+// Wordle Deluxe Word Lists
+// TARGET_WORDS: A list of common 5-letter words that can be the daily/random puzzle word.
+// VALID_GUESSES: A broader list of valid words that can be guessed (plurals, rarer words, etc.)
+
+const TARGET_WORDS = [
+  "about", "above", "abuse", "actor", "acute", "admit", "adopt", "adult", "after", "again",
+  "agent", "agree", "ahead", "alarm", "album", "alert", "alike", "alive", "allow", "alone",
+  "along", "alter", "among", "anger", "angle", "angry", "apart", "apple", "apply", "arena",
+  "argue", "arise", "array", "arrow", "aside", "asset", "audio", "audit", "avoid", "award",
+  "aware", "awful", "badly", "baker", "bases", "basic", "basis", "beach", "beard", "beast",
+  "begin", "being", "below", "bench", "berry", "bible", "birth", "black", "blade", "blame",
+  "blind", "block", "blood", "board", "boast", "bonus", "boost", "bound", "brain", "brand",
+  "bread", "break", "breed", "brick", "bride", "brief", "bring", "broad", "broke", "brown",
+  "brush", "build", "bunch", "buyer", "cabin", "cable", "camel", "camera", "camp", "canal",
+  "candy", "canon", "cargo", "carve", "cases", "catch", "cause", "cedar", "chain", "chair",
+  "chaos", "charm", "chart", "chase", "cheap", "check", "cheek", "cheer", "chest", "chief",
+  "child", "china", "chips", "choir", "chose", "chuck", "cigar", "claim", "class", "clean",
+  "clear", "clerk", "click", "cliff", "climb", "clock", "close", "cloth", "cloud", "coach",
+  "coast", "cobra", "cocoa", "color", "comic", "count", "court", "cover", "craft", "crane",
+  "crash", "cream", "crime", "cross", "crowd", "crown", "crude", "crush", "crust", "cubic",
+  "curly", "cycle", "daily", "dance", "dated", "dealt", "death", "debut", "delay", "depth",
+  "doing", "doubt", "dozen", "draft", "drama", "drawn", "dream", "dress", "dried", "drift",
+  "drill", "drink", "drive", "drove", "dying", "eager", "early", "earth", "eight", "elbow",
+  "elder", "elect", "elite", "empty", "enemy", "enjoy", "enter", "entry", "equal", "error",
+  "event", "every", "exact", "exist", "extra", "faith", "false", "fancy", "fatal", "favor",
+  "feast", "fiber", "field", "fifth", "fifty", "fight", "final", "first", "fixed", "flame",
+  "flash", "fleet", "flesh", "float", "flood", "floor", "fluid", "flute", "flyer", "focus",
+  "force", "forum", "found", "frame", "frank", "fraud", "fresh", "front", "frost", "fruit",
+  "funny", "giant", "given", "glass", "globe", "glory", "glove", "grace", "grade", "grain",
+  "grand", "grant", "grape", "grass", "grave", "great", "green", "grief", "grill", "gross",
+  "group", "grown", "guard", "guess", "guest", "guide", "habit", "hairs", "harsh", "haven",
+  "heavy", "hello", "hence", "honey", "honor", "horse", "hotel", "house", "human", "humor",
+  "ideal", "image", "imply", "index", "inner", "input", "irony", "issue", "items", "ivory",
+  "jeans", "joint", "judge", "juice", "kings", "knees", "knife", "knock", "known", "label",
+  "labor", "lakes", "large", "laser", "later", "laugh", "layer", "leads", "learn", "lease",
+  "least", "leave", "legal", "lemon", "level", "lever", "light", "limit", "lined", "links",
+  "liver", "lives", "local", "logic", "loose", "lover", "lower", "lucky", "lunch", "lying",
+  "magic", "major", "maker", "march", "maria", "match", "maybe", "mayor", "meant", "medal",
+  "media", "mercy", "merit", "metal", "micro", "midst", "might", "minor", "minus", "mixed",
+  "model", "money", "month", "moral", "motor", "mount", "mouse", "mouth", "moved", "movie",
+  "music", "myths", "naked", "nasty", "naval", "needs", "never", "newer", "newly", "night",
+  "noise", "north", "noted", "novel", "nurse", "ocean", "offer", "often", "onion", "order",
+  "other", "ought", "outer", "owned", "owner", "oxide", "pages", "paint", "panel", "paper",
+  "parts", "party", "patch", "patio", "peace", "peach", "pearl", "pedal", "phase", "phone",
+  "photo", "piano", "picks", "piece", "pilot", "pinch", "pipes", "pitch", "pixel", "pizza",
+  "place", "plain", "plane", "plant", "plate", "plays", "plaza", "plead", "plent", "point",
+  "poker", "polar", "poles", "polls", "pools", "ports", "poses", "pouch", "pound", "power",
+  "press", "price", "pride", "prime", "print", "prior", "prize", "probe", "promo", "prone",
+  "proof", "proud", "prove", "proxy", "pulse", "punch", "pupil", "purse", "queen", "query",
+  "quest", "queue", "quick", "quiet", "quilt", "quite", "quote", "radar", "radio", "raise",
+  "rally", "ranch", "range", "rapid", "ratio", "reach", "react", "ready", "realm", "rebel",
+  "refer", "reign", "relax", "relay", "relief", "renew", "reply", "reset", "retail", "retro",
+  "retry", "reuse", "rhyme", "rider", "ridge", "right", "rigid", "rings", "rinse", "ripen",
+  "risky", "rival", "river", "roads", "robot", "rocks", "rocky", "rogue", "roles", "roman",
+  "roots", "rough", "round", "route", "royal", "rugby", "ruled", "ruler", "rules", "rural",
+  "sadly", "safer", "salad", "sales", "salon", "salty", "salve", "sandy", "satin", "sauce",
+  "sauna", "saved", "saver", "savor", "scale", "scalp", "scare", "scarf", "scary", "scene",
+  "scent", "scope", "score", "scout", "scrap", "scream", "screw", "scrub", "scuba", "seats",
+  "seeds", "seize", "sells", "senate", "sense", "serum", "serve", "setup", "seven", "sewer",
+  "shade", "shadow", "shady", "shaft", "shake", "shaky", "shall", "shame", "shape", "share",
+  "shark", "sharp", "shave", "shawl", "shear", "sheer", "sheet", "shelf", "shell", "shift",
+  "shine", "shiny", "ships", "shirt", "shock", "shoes", "shone", "shook", "shoot", "shops",
+  "shore", "short", "shots", "shout", "shove", "shown", "shows", "shrub", "shrug", "shun",
+  "shunt", "shyly", "siren", "sites", "sixth", "sixty", "sized", "sizes", "skate", "skier",
+  "skies", "skill", "skims", "skins", "skirt", "skull", "skunk", "slack", "slain", "slang",
+  "slant", "slate", "sleek", "sleep", "sleet", "slept", "slice", "slick", "slide", "slime",
+  "slimy", "sling", "slink", "slips", "slope", "slots", "slows", "slump", "slung", "slush",
+  "smack", "small", "smart", "smash", "smell", "smelt", "smile", "smirk", "smite", "smith",
+  "smoke", "smoky", "smote", "snack", "snail", "snake", "snaky", "snaps", "snare", "snarl",
+  "sneak", "sneer", "sniff", "snipe", "snips", "snob", "snoop", "snore", "snort", "snout",
+  "snows", "snowy", "snuff", "soapy", "sober", "socks", "soda", "sofa", "soft", "soggy",
+  "solar", "soles", "solid", "solos", "solve", "sonar", "songs", "sonic", "soot", "sorry",
+  "souls", "sound", "soups", "soupy", "sour", "south", "sowed", "sower", "space", "spade",
+  "spank", "spans", "spare", "spark", "spasm", "spat", "spawn", "speak", "spear", "specs",
+  "speed", "spell", "spelt", "spend", "spent", "sperm", "spice", "spicy", "spied", "spies",
+  "spike", "spiky", "spill", "spilt", "spine", "spins", "spiny", "spire", "spite", "spits",
+  "split", "spoil", "spoke", "spoof", "spook", "spool", "spoon", "spore", "sport", "spots",
+  "spout", "spray", "spree", "sprig", "spurs", "spurn", "spurt", "squad", "squat", "squib",
+  "squid", "stack", "staff", "stage", "stags", "stain", "stair", "stake", "stale", "stalk",
+  "stall", "stamp", "stand", "stank", "stare", "stark", "stars", "start", "stash", "state",
+  "stats", "stave", "stays", "stead", "steak", "steal", "steam", "steed", "steel", "steep",
+  "steer", "stein", "stems", "steps", "stern", "stews", "stick", "stiff", "stile", "still",
+  "stilt", "sting", "stink", "stint", "stirs", "stock", "stoic", "stoke", "stole", "stomp",
+  "stone", "stony", "stood", "stool", "stoop", "stops", "store", "stork", "storm", "story",
+  "stout", "stove", "strap", "straw", "stray", "strew", "strip", "strut", "stubs", "stuck",
+  "studs", "study", "stuff", "stump", "stung", "stunk", "stunt", "style", "sugar", "suits",
+  "suite", "sulky", "sully", "sumac", "sunny", "super", "surge", "surly", "sushi", "swami",
+  "swamp", "swank", "swans", "swaps", "swarm", "swear", "sweat", "sweep", "sweet", "swell",
+  "swept", "swift", "swill", "swims", "swine", "swing", "swipe", "swirl", "swish", "swiss",
+  "swivel", "swoon", "swoop", "sword", "swore", "sworn", "swum", "swung", "syrup", "table",
+  "taboo", "tacit", "tacks", "tacky", "tacos", "tact", "tails", "taken", "taker", "takes",
+  "tales", "talks", "talky", "tally", "talon", "tamed", "tamer", "tango", "tangy", "tanks",
+  "taped", "taper", "tapes", "tapir", "tardy", "tarts", "tasks", "taste", "tasty", "tater",
+  "tatty", "taunt", "tawny", "taxes", "taxis", "teach", "teams", "tears", "teary", "tease",
+  "teddy", "teems", "teens", "teeny", "teeth", "tells", "tempo", "temps", "tempt", "tends",
+  "tenet", "tenon", "tenor", "tense", "tenth", "tents", "tepid", "terms", "terra", "terse",
+  "tests", "testy", "texts", "thank", "theft", "their", "theme", "there", "these", "theta",
+  "thick", "thief", "thigh", "thine", "thing", "think", "third", "thong", "thorn", "those",
+  "three", "threw", "throb", "throe", "throw", "thrum", "thud", "thumb", "thump", "thus",
+  "tiara", "tibia", "ticks", "tidal", "tides", "tiger", "tight", "tilde", "tiled", "tiles",
+  "tills", "tilts", "timed", "timer", "times", "timid", "tinge", "tinny", "tints", "tipsy",
+  "tired", "tires", "titan", "title", "toads", "toady", "toast", "today", "toddy", "tofus",
+  "togas", "toils", "token", "tolls", "tombs", "tomes", "tonal", "toned", "toner", "tones",
+  "tongs", "tonic", "tools", "tooth", "topaz", "topic", "toque", "torch", "torso", "torts",
+  "total", "toted", "totem", "totes", "touch", "tough", "tours", "touts", "towed", "towel",
+  "tower", "towns", "toxic", "toxin", "toyed", "trace", "track", "tract", "trade", "trail",
+  "train", "trait", "tramp", "traps", "trash", "trawl", "trays", "tread", "treat", "trees",
+  "treks", "trend", "tress", "triad", "trial", "tribe", "trice", "trick", "tried", "tries",
+  "trike", "trill", "trims", "trio", "tripe", "trips", "trite", "troll", "troop", "trope",
+  "trout", "trove", "truce", "truck", "trued", "truer", "trues", "truly", "trump", "trunk",
+  "truss", "trust", "truth", "tryst", "tubal", "tubas", "tubby", "tuber", "tubes", "tucks",
+  "tufts", "tulip", "tulle", "tummy", "tumor", "tunas", "tuned", "tuner", "tunes", "tunic",
+  "turbo", "turns", "tutor", "tutus", "tuxes", "twain", "twang", "tweak", "tweed", "tweet",
+  "twigs", "twill", "twine", "twins", "twirl", "twist", "twits", "tying", "typed", "types",
+  "typos", "udder", "ulcer", "ultra", "uncle", "uncut", "under", "undid", "undue", "unfit",
+  "union", "unite", "units", "unity", "unlit", "unmet", "unset", "untie", "until", "unwed",
+  "unzip", "upend", "upper", "upset", "urban", "urged", "urges", "urine", "usage", "users",
+  "usher", "using", "usual", "usurp", "usury", "utter", "uvula", "vague", "valet", "valid",
+  "valor", "value", "valve", "vapid", "vapor", "vases", "vault", "vaunt", "vegan", "veils",
+  "veins", "veiny", "venom", "vents", "venue", "verbs", "verge", "verse", "verso", "verve",
+  "vests", "vials", "vibes", "vicar", "vices", "video", "views", "vigil", "vigor", "viler",
+  "villa", "vinyl", "viola", "viols", "viper", "viral", "virus", "visas", "vises", "visit",
+  "visor", "vista", "vital", "vivid", "vixen", "vocal", "vodka", "vogue", "voice", "voids",
+  "voila", "vomit", "voted", "voter", "votes", "vouch", "vowed", "vowel", "vulva", "vying",
+  "wacky", "waded", "wader", "wades", "wafer", "wager", "wages", "wagon", "waist", "waits",
+  "waive", "waked", "waken", "wakes", "wales", "walks", "walls", "waltz", "wands", "waned",
+  "wanes", "wanly", "wants", "wards", "wares", "warms", "warns", "warps", "warts", "waste",
+  "watch", "water", "watts", "waved", "waver", "waves", "waxed", "waxen", "waxes", "weary",
+  "weave", "wedge", "weeds", "weedy", "weeks", "weeps", "weigh", "weird", "welds", "wells",
+  "welsh", "welts", "wench", "wests", "whack", "whale", "wharf", "wheat", "wheel", "whelk",
+  "where", "whets", "which", "whiff", "while", "whims", "whine", "wips", "whirl", "whirr",
+  "whisk", "whispy", "whist", "white", "whole", "whoop", "whore", "whorl", "whose", "wicks",
+  "widen", "wider", "widow", "width", "wield", "wiles", "wills", "wilts", "wince", "winch",
+  "winds", "windy", "wined", "wines", "wings", "winks", "wiped", "wiper", "wipes", "wired",
+  "wires", "wiry", "wiser", "wises", "wisps", "wispy", "witch", "witty", "wives", "wizen",
+  "wobble", "wobbly", "woman", "wombs", "women", "wonky", "wonts", "woods", "woody", "wooed",
+  "wools", "wooly", "woozy", "words", "wordy", "works", "world", "worms", "worry", "worse",
+  "worst", "worth", "would", "wound", "woven", "wrack", "wraps", "wrath", "wreak", "wreck",
+  "wrens", "wrest", "wring", "wrist", "write", "wrong", "wrote", "wroth", "wrung", "wryly",
+  "xenon", "xylem", "yacht", "yahoo", "yanks", "yards", "yarns", "yawned", "yawns", "yearn",
+  "years", "yeast", "yells", "yelps", "yield", "yikes", "yokes", "yolks", "young", "yours",
+  "youth", "yucca", "yucky", "yummy", "yurts", "zaire", "zebra", "zeros", "zests", "zesty",
+  "zilch", "zincd", "zincs", "zippy", "zloty", "zonal", "zoned", "zones", "zooms"
+];
+
+// Extra words not in main target list
+const GUESS_EXTRA = [];
+
+// Category-themed 5-letter word lists
+const CATEGORY_WORDS = {
+  movies: ["MOVIE", "ACTOR", "STAGE", "SCENE", "OSCAR", "DRAMA", "FIGHT", "ALIEN", "SHREK", "PLOTS", "ROLES", "SHARK", "TITLE", "CLINT", "FILMS", "MEDIA", "SPOKE", "STARS", "GHOST", "WITCH", "ROBOT", "SUPER", "JOKER", "BRUCE", "FORCE"],
+  geography: ["SPAIN", "PARIS", "TOKYO", "EGYPT", "RIVER", "OCEAN", "EARTH", "GLOBE", "ROADS", "SOUTH", "NORTH", "CHINA", "INDIA", "ITALY", "TEXAS", "MIAMI", "ANDES", "CANAL", "LAKES", "BEACH", "MOUNT", "RURAL", "LOCAL", "COAST", "OASIS"],
+  science: ["ATOMS", "CELLS", "GENES", "ORGAN", "SOLVE", "SPACE", "LASER", "FIBER", "OXIDE", "STEAM", "WATER", "ROBOT", "SOLAR", "VIRUS", "SONAR", "RADAR", "LOGIC", "METAL", "FLUID", "PROBE", "ORBIT", "PULSE", "PHASE", "HELIX", "MICRO"],
+  food: ["PIZZA", "APPLE", "PEACH", "LEMON", "ONION", "CANDY", "SUSHI", "HONEY", "GRAPE", "GRAIN", "SALAD", "SAUCE", "CREAM", "BREAD", "TACOS", "WHEAT", "MANGO", "BERRY", "SUGAR", "SPICY", "SALTY", "SAVOR", "CHILI", "BASIL", "TOAST"]
+};
+
+// Ensure all category words are treated as valid guesses
+const ALL_CATEGORY_WORDS = [];
+Object.values(CATEGORY_WORDS).forEach(list => {
+  list.forEach(w => {
+    ALL_CATEGORY_WORDS.push(w.toLowerCase());
+  });
+});
+
+// Combined set for fast lookups
+const VALID_GUESS_SET = new Set([...TARGET_WORDS, ...GUESS_EXTRA, ...ALL_CATEGORY_WORDS]);
+
+// Validate if guess exists in the wordlist
+function isValidWordleWord(word) {
+  const lcWord = word.toLowerCase().trim();
+  return lcWord.length === 5 && VALID_GUESS_SET.has(lcWord);
+}
+

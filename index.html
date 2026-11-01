@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Play Wordle Deluxe - A premium, highly-polished 5-letter word guessing game with interactive grid flip animations, stats tracker, retro synth sounds, and beautiful dark mode aesthetics.">
+  <title>Wordle Deluxe - Premium Word Guessing Game</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- PWA Configurations -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a0c16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icon-512.jpg">
+</head>
+<body class="dark-theme">
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- Header Section -->
+    <header class="app-header">
+      <div class="header-left">
+        <button id="btn-home" class="icon-btn" aria-label="Go to main menu" style="display: none; margin-right: 8px;">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </button>
+        <button id="btn-help" class="icon-btn" aria-label="How to play">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+      </div>
+      
+      <div class="header-title">
+        <h1>WORDLE <span class="accent-text">DELUXE</span></h1>
+      </div>
+      
+      <div class="header-right">
+        <button id="btn-stats" class="icon-btn" aria-label="Game statistics">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </button>
+        <button id="btn-settings" class="icon-btn" aria-label="Settings">
+          <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Progression HUD -->
+    <div class="progression-hud">
+      <div class="hud-item level-badge">LVL <span id="player-level">1</span></div>
+      <div class="hud-item xp-container">
+        <div class="xp-bar-outer">
+          <div class="xp-bar-inner" id="player-xp-bar" style="width: 0%"></div>
+        </div>
+        <span class="xp-text" id="player-xp-text">0 / 100 XP</span>
+      </div>
+      <div class="hud-item credits-badge">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9 12h6"/></svg>
+        <span id="player-credits">0</span> RC
+      </div>
+    </div>
+
+    <!-- Main Game Board / Screens Container -->
+    <main class="game-main">
+      
+      <!-- SCREEN: Dashboard -->
+      <section id="screen-dashboard" class="app-screen active">
+        <h2 class="section-title">CHOOSE YOUR CHALLENGE</h2>
+        <div class="mode-grid">
+          <div class="mode-card classic" data-mode="classic">
+            <div class="mode-card-icon">🎯</div>
+            <div class="mode-card-info">
+              <h3>Classic Wordle</h3>
+              <p>Daily puzzle & unlimited training</p>
+            </div>
+          </div>
+          <div class="mode-card categories" data-mode="categories">
+            <div class="mode-card-icon">📚</div>
+            <div class="mode-card-info">
+              <h3>Category Modes</h3>
+              <p>Movies, Geography, Science & Food themes</p>
+            </div>
+          </div>
+          <div class="mode-card timeattack" data-mode="timeattack">
+            <div class="mode-card-icon">⚡</div>
+            <div class="mode-card-info">
+              <h3>Time Attack</h3>
+              <p>Solve as many words in 2 mins as possible</p>
+            </div>
+          </div>
+          <div class="mode-card multiplayer" data-mode="multiplayer">
+            <div class="mode-card-icon">⚔️</div>
+            <div class="mode-card-info">
+              <h3>Multiplayer Race</h3>
+              <p>Play VS real-time Bot or Local PvP screen split</p>
+            </div>
+          </div>
+          <div class="mode-card shop" data-mode="shop">
+            <div class="mode-card-icon">🛒</div>
+            <div class="mode-card-info">
+              <h3>Power-ups & Themes</h3>
+              <p>Buy help boosts and neon display skins</p>
+            </div>
+          </div>
+          <div class="mode-card leaderboard" data-mode="leaderboard">
+            <div class="mode-card-icon">🏆</div>
+            <div class="mode-card-info">
+              <h3>Leaderboards</h3>
+              <p>Check rankings by streak or speed</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN: Classic -->
+      <section id="screen-classic" class="app-screen">
+        <div class="game-hud">
+          <span class="game-hud-title" id="classic-hud-title">CLASSIC MODE</span>
+          <div class="powerups-hud">
+            <button id="pwr-reveal" class="pwr-btn" title="Reveal Letter (150 RC)">
+              🔍 <span class="pwr-count" id="count-pwr-reveal">0</span>
+            </button>
+            <button id="pwr-ditch" class="pwr-btn" title="Ditch Keys (100 RC)">
+              💣 <span class="pwr-count" id="count-pwr-ditch">0</span>
+            </button>
+            <button id="pwr-extra" class="pwr-btn" title="Extra Guess (200 RC)">
+              ➕ <span class="pwr-count" id="count-pwr-extra">0</span>
+            </button>
+          </div>
+        </div>
+        <div class="grid-container" id="classic-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- SCREEN: Categories -->
+      <section id="screen-categories" class="app-screen">
+        <div class="category-selection" id="category-selector-panel">
+          <h2 class="section-title">CHOOSE A THEME</h2>
+          <div class="category-grid">
+            <div class="category-card movies" data-category="movies">
+              <span class="cat-icon">🎬</span>
+              <h3>Movies</h3>
+              <p>Cinematic terms & titles</p>
+            </div>
+            <div class="category-card geography" data-category="geography">
+              <span class="cat-icon">🌍</span>
+              <h3>Geography</h3>
+              <p>Cities, nations & places</p>
+            </div>
+            <div class="category-card science" data-category="science">
+              <span class="cat-icon">🧪</span>
+              <h3>Science</h3>
+              <p>Physics, stars & organs</p>
+            </div>
+            <div class="category-card food" data-category="food">
+              <span class="cat-icon">🍕</span>
+              <h3>Food</h3>
+              <p>Culinary tastes & eats</p>
+            </div>
+          </div>
+        </div>
+        <div class="category-game-area" id="category-game-panel" style="display: none;">
+          <div class="game-hud">
+            <span class="game-hud-title" id="category-hud-title">CATEGORY: MOVIES</span>
+            <button class="small-btn" id="btn-back-categories">Back to Themes</button>
+          </div>
+          <div class="grid-container" id="category-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN: Time Attack -->
+      <section id="screen-timeattack" class="app-screen">
+        <div class="timeattack-hud">
+          <div class="hud-box timer">
+            <span class="hud-lbl">TIME LEFT</span>
+            <span id="timeattack-timer" class="hud-val timer-glow">120</span>
+          </div>
+          <div class="hud-box score">
+            <span class="hud-lbl">SCORE</span>
+            <span id="timeattack-score" class="hud-val">0</span>
+          </div>
+          <div class="hud-box solved">
+            <span class="hud-lbl">WORDS</span>
+            <span id="timeattack-solved" class="hud-val">0</span>
+          </div>
+        </div>
+        <div class="grid-container" id="timeattack-grid">
+          <!-- Populated by JS -->
+        </div>
+        <div class="timeattack-controls">
+          <button class="primary-btn" id="btn-timeattack-skip">Skip Word (-10s)</button>
+        </div>
+      </section>
+
+      <!-- SCREEN: Multiplayer Selection & Arenas -->
+      <section id="screen-multiplayer" class="app-screen">
+        <div class="multiplayer-selection" id="mp-selector-panel">
+          <h2 class="section-title">MULTIPLAYER ARENA</h2>
+          <div class="multiplayer-grid">
+            <div class="multiplayer-card vs-bot" id="btn-mp-vsbot">
+              <div class="mp-icon">🤖</div>
+              <h3>VS Bot Race</h3>
+              <p>Speed guess against 'ByteBrain' bot on identical word</p>
+            </div>
+            <div class="multiplayer-card vs-local" id="btn-mp-vslocal">
+              <div class="mp-icon">👥</div>
+              <h3>Local Split PvP</h3>
+              <p>Play side-by-side on split layout with independent keyboards</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- VS Bot Arena -->
+        <div class="vs-bot-game" id="mp-vsbot-panel" style="display: none;">
+          <div class="game-hud">
+            <span class="game-hud-title">VS BYTEBRAIN</span>
+            <div class="bot-status-container">
+              <div class="bot-track-label">Bot: <span id="bot-status-text">Thinking...</span></div>
+              <div class="bot-progress-track">
+                <div class="bot-progress-bar" id="bot-progress-bar" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="split-game-container">
+            <div class="player-side">
+              <h4>YOU</h4>
+              <div class="grid-container mini-grid" id="vsbot-player-grid"></div>
+            </div>
+            <div class="bot-side">
+              <h4>BYTEBRAIN</h4>
+              <div class="grid-container mini-grid" id="vsbot-bot-grid"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Local Split PvP Arena -->
+        <div class="local-pvp-game" id="mp-pvp-panel" style="display: none;">
+          <div class="pvp-split-layout">
+            <!-- Player 1 Side -->
+            <div class="pvp-player-side pvp-left" id="pvp-p1-area">
+              <div class="pvp-header">
+                <h3>Player 1</h3>
+                <span class="pvp-status-badge" id="pvp-p1-badge">Solving...</span>
+              </div>
+              <div class="grid-container mini-grid" id="pvp-p1-grid"></div>
+              <div class="pvp-keyboard-area" id="pvp-p1-keyboard"></div>
+            </div>
+            <!-- Player 2 Side -->
+            <div class="pvp-player-side pvp-right" id="pvp-p2-area">
+              <div class="pvp-header">
+                <h3>Player 2</h3>
+                <span class="pvp-status-badge" id="pvp-p2-badge">Solving...</span>
+              </div>
+              <div class="grid-container mini-grid" id="pvp-p2-grid"></div>
+              <div class="pvp-keyboard-area" id="pvp-p2-keyboard"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN: Shop -->
+      <section id="screen-shop" class="app-screen">
+        <h2 class="section-title">POWER-UPS & BOOSTERS</h2>
+        <div class="shop-grid">
+          <div class="shop-card" id="card-buy-reveal">
+            <div class="shop-card-icon">🔍</div>
+            <h3>Reveal Letter</h3>
+            <p>Places a correct letter in the current active row</p>
+            <button class="shop-buy-btn" id="buy-reveal-btn">Buy for 150 RC</button>
+          </div>
+          <div class="shop-card" id="card-buy-ditch">
+            <div class="shop-card-icon">💣</div>
+            <h3>Ditch 3 Keys</h3>
+            <p>Disables 3 letters from the keyboard not in word</p>
+            <button class="shop-buy-btn" id="buy-ditch-btn">Buy for 100 RC</button>
+          </div>
+          <div class="shop-card" id="card-buy-extra">
+            <div class="shop-card-icon">➕</div>
+            <h3>Extra Attempt</h3>
+            <p>Appends a 7th guess row to the current game</p>
+            <button class="shop-buy-btn" id="buy-extra-btn">Buy for 200 RC</button>
+          </div>
+        </div>
+        
+        <h2 class="section-title" style="margin-top: 25px;">NEON THEMING SKINS</h2>
+        <div class="shop-themes-grid">
+          <div class="theme-card unlocked" id="theme-card-synthwave" data-theme-id="synthwave">
+            <div class="theme-preview synthwave"></div>
+            <h3>Synthwave Night</h3>
+            <button class="theme-unlock-btn" id="btn-unlock-synthwave">Equipped</button>
+          </div>
+          <div class="theme-card locked" id="theme-card-cyberpunk" data-theme-id="cyberpunk">
+            <div class="theme-preview cyberpunk"></div>
+            <h3>Cyberpunk 2077</h3>
+            <button class="theme-unlock-btn" id="btn-unlock-cyberpunk">Unlock (300 RC)</button>
+          </div>
+          <div class="theme-card locked" id="theme-card-forest" data-theme-id="forest">
+            <div class="theme-preview forest"></div>
+            <h3>Forest Oasis</h3>
+            <button class="theme-unlock-btn" id="btn-unlock-forest">Unlock (300 RC)</button>
+          </div>
+          <div class="theme-card locked" id="theme-card-terminal" data-theme-id="terminal">
+            <div class="theme-preview terminal"></div>
+            <h3>Retro Terminal</h3>
+            <button class="theme-unlock-btn" id="btn-unlock-terminal">Unlock (300 RC)</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN: Leaderboard -->
+      <section id="screen-leaderboard" class="app-screen">
+        <h2 class="section-title">LEADERBOARD RANKINGS</h2>
+        <div class="leaderboard-tabs">
+          <button class="leaderboard-tab-btn active" data-board="streak">Best Streak</button>
+          <button class="leaderboard-tab-btn" data-board="timeattack">Time Attack</button>
+          <button class="leaderboard-tab-btn" data-board="level">Top Level</button>
+        </div>
+        <div class="leaderboard-container">
+          <table class="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Competitor</th>
+                <th id="lbl-leaderboard-metric">Streak</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-table-body">
+              <!-- Injected dynamically by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer / Keyboard Area -->
+    <footer class="game-footer" id="main-keyboard-footer">
+      <div class="keyboard-container" id="keyboard" aria-label="Game Keyboard">
+        <!-- Keyboard rows generated dynamically via JS -->
+      </div>
+    </footer>
+  </div>
+
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- MODALS -->
+  <!-- Help Modal -->
+  <div class="modal-overlay" id="modal-help">
+    <div class="modal-card">
+      <button class="modal-close" id="close-help" aria-label="Close modal">&times;</button>
+      <h2>How To Play</h2>
+      <p class="subtitle">Guess the Wordle Deluxe in 6 tries.</p>
+      
+      <ul class="help-rules">
+        <li>Each guess must be a valid 5-letter word.</li>
+        <li>The color of the tiles will change to show how close your guess was to the word.</li>
+      </ul>
+
+      <div class="help-examples">
+        <h3>Examples</h3>
+        <div class="example-item">
+          <div class="example-row">
+            <div class="cell correct">W</div>
+            <div class="cell">E</div>
+            <div class="cell">A</div>
+            <div class="cell">R</div>
+            <div class="cell">Y</div>
+          </div>
+          <p><strong>W</strong> is in the word and in the correct spot.</p>
+        </div>
+        
+        <div class="example-item">
+          <div class="example-row">
+            <div class="cell">P</div>
+            <div class="cell present">I</div>
+            <div class="cell">L</div>
+            <div class="cell">O</div>
+            <div class="cell">T</div>
+          </div>
+          <p><strong>I</strong> is in the word but in the wrong spot.</p>
+        </div>
+
+        <div class="example-item">
+          <div class="example-row">
+            <div class="cell">V</div>
+            <div class="cell">A</div>
+            <div class="cell">G</div>
+            <div class="cell absent">U</div>
+            <div class="cell">E</div>
+          </div>
+          <p><strong>U</strong> is not in the word in any spot.</p>
+        </div>
+      </div>
+
+      <button class="primary-btn btn-close-modal" id="btn-start-playing">Let's Play</button>
+    </div>
+  </div>
+
+  <!-- Stats Modal -->
+  <div class="modal-overlay" id="modal-stats">
+    <div class="modal-card">
+      <button class="modal-close" id="close-stats" aria-label="Close modal">&times;</button>
+      <h2>Statistics</h2>
+      
+      <div class="stats-summary">
+        <div class="stat-box">
+          <span class="stat-val" id="stat-played">0</span>
+          <span class="stat-lbl">Played</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" id="stat-win-ratio">0</span>
+          <span class="stat-lbl">Win %</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" id="stat-current-streak">0</span>
+          <span class="stat-lbl">Current Streak</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" id="stat-max-streak">0</span>
+          <span class="stat-lbl">Max Streak</span>
+        </div>
+      </div>
+
+      <h3>Guess Distribution</h3>
+      <div class="guess-distribution" id="guess-distribution-bars">
+        <!-- Bars injected dynamically via JS -->
+      </div>
+
+      <div class="stats-actions">
+        <div class="countdown-section">
+          <h4>NEXT PUZZLE (DAILY)</h4>
+          <div id="countdown-timer" class="timer-display">00:00:00</div>
+        </div>
+        <div class="action-divider"></div>
+        <div class="mode-section">
+          <h4>UNLIMITED MODE</h4>
+          <button class="primary-btn action-glow-btn" id="btn-next-game">Play Next Word</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="modal-settings">
+    <div class="modal-card">
+      <button class="modal-close" id="close-settings" aria-label="Close modal">&times;</button>
+      <h2>Settings</h2>
+      
+      <div class="settings-list">
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-title">Hard Mode</span>
+            <span class="setting-desc">Any revealed hints must be used in subsequent guesses</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="setting-hard-mode">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-title">Sound Effects</span>
+            <span class="setting-desc">Play retro synth sounds on typing and verification</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="setting-sound-effects" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <span class="setting-title">Light Theme</span>
+            <span class="setting-desc">Switch color palette to clean light hues</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="setting-theme">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      
+      <div class="settings-footer">
+        <p>Wordle Deluxe v1.0.0 &bull; Built with &hearts; using Vanilla JS</p>
+      </div>
+    </div>
+  <!-- Level-Up Modal -->
+  <div class="modal-overlay" id="modal-levelup">
+    <div class="modal-card celebration">
+      <h2 style="color: var(--accent-color); font-size: 2.2rem; margin-bottom: 10px;">LEVEL UP!</h2>
+      <div class="levelup-badge" style="width: 80px; height: 80px; border-radius: 50%; background: var(--accent-color); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800; margin: 15px auto; box-shadow: 0 0 20px var(--accent-glow);">
+        <span id="levelup-new-val">2</span>
+      </div>
+      <p class="levelup-msg" style="font-size: 1.1rem; margin-bottom: 8px;">Congratulations! You have reached a new rank.</p>
+      <p class="levelup-bonus" style="color: hsl(142, 60%, 45%); font-weight: 600; margin-bottom: 20px;">+100 Credits Awarded! 🎉</p>
+      <button class="primary-btn btn-close-modal" id="btn-levelup-confirm">Awesome!</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+
+  <!-- Service Worker registration script -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js")
+          .then((reg) => console.log("[Service Worker] Registered successfully:", reg.scope))
+          .catch((err) => console.error("[Service Worker] Registration failed:", err));
+      });
+    }
+  </script>
+</body>
+</html>
